@@ -146,26 +146,36 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 )
 };
 
+bool mac_mode = false;
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case RAISE:
       if (record->event.pressed) {
         layer_on(_RAISE);
+        if (mac_mode) {
+          layer_on(_MAC_MODS);
+        }
         update_tri_layer(_RAISE, _FN, _SETTINGS);
       } else {
         layer_off(_RAISE);
+        if (mac_mode) {
+          layer_off(_MAC_MODS);
+        }
         update_tri_layer(_RAISE, _FN, _SETTINGS);
       }
       return false;
       break;
     case MAC_ON:
       if (record->event.pressed) {
+        mac_mode = true;
         layer_on(_MAC_MODS);
       }
       return false;
       break;
     case MAC_OFF:
       if (record->event.pressed) {
+        mac_mode = false;
         layer_off(_MAC_MODS);
       }
       return false;
