@@ -1,4 +1,5 @@
-/* Copyright 2015-2017 Jack Humbert
+/* Copyright 2021 Albert Krzymowski.
+ * Modified from layout provided by Jack Humbert.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +23,8 @@ enum preonic_layers {
   _QWERTY,
   _RAISE,
   _MAC_MODS,
-  _FN
+  _FN,
+  _SETTINGS
 };
 
 enum preonic_keycodes {
@@ -105,21 +107,42 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      | Reset| Debug|      |      |      |      |TermOf|TermOn|      |      |      |
+ * |      |      |      |      |      |      |      |      |      |      |      |      |
  * |------+------+------+------+------+-------------+------+------+------+------+------|
- * |      | Caps |Aud cy|Aud on|AudOff|      |      |      |      |      |      |      |
+ * |      | Caps |      |      |      |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------|------+------+------+------+------+------|
- * |      |Voice-|Voice+|Mus on|MusOff|MidiOn|MidOff|      |      |      | Vol +|      |
+ * |      |      |      |      |      |      |      |      |      |      | Vol +|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |      |      |      |      |             |      |      |      | Vol -|      |
  * `-----------------------------------------------------------------------------------'
  */
 [_FN] = LAYOUT_preonic_grid(
   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+  _______, KC_CAPS, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC__VOLUP, _______,
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC__VOLDOWN, _______
+),
+
+/* Settings
+ * ,-----------------------------------------------------------------------------------.
+ * |      |      |      |      |      |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |      | Reset| Debug|      |      |      |      |TermOf|TermOn|      |      |      |
+ * |------+------+------+------+------+-------------+------+------+------+------+------|
+ * |      | Caps |Aud cy|Aud on|AudOff|      |      |      |      |RgbTog|RgbMod|      |
+ * |------+------+------+------+------+------|------+------+------+------+------+------|
+ * |      |Voice-|Voice+|Mus on|MusOff|MidiOn|MidOff| MacOn|MacOff|      |      |      |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |      |      |      |      |      |             |      |      |      |      |      |
+ * `-----------------------------------------------------------------------------------'
+ */
+[_SETTINGS] = LAYOUT_preonic_grid(
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
   _______, RESET,   DEBUG,   _______, _______, _______, _______, TERM_ON, TERM_OFF,_______, _______, _______,
   _______, KC_CAPS, MU_MOD,  AU_ON,   AU_OFF,  _______, _______, _______, _______, RGB_TOG, RGB_MOD, _______,
-  _______, MUV_DE,  MUV_IN,  MU_ON,   MU_OFF,  MI_ON,   MI_OFF,  MAC_ON,  MAC_OFF, _______, KC__VOLUP, _______,
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC__VOLDOWN, _______
+  _______, MUV_DE,  MUV_IN,  MU_ON,   MU_OFF,  MI_ON,   MI_OFF,  MAC_ON,  MAC_OFF, _______, _______, _______,
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 )
 };
 
@@ -128,8 +151,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case RAISE:
       if (record->event.pressed) {
         layer_on(_RAISE);
+        update_tri_layer(_RAISE, _FN, _SETTINGS);
       } else {
         layer_off(_RAISE);
+        update_tri_layer(_RAISE, _FN, _SETTINGS);
       }
       return false;
       break;
@@ -148,8 +173,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case FN:
       if (record->event.pressed) {
         layer_on(_FN);
+        update_tri_layer(_RAISE, _FN, _SETTINGS);
       } else {
         layer_off(_FN);
+        update_tri_layer(_RAISE, _FN, _SETTINGS);
       }
       return false;
       break;
