@@ -181,9 +181,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         update_tri_layer(_RAISE, _FN, _SETTINGS);
       } else {
         layer_off(_RAISE);
-        if (mac_mode) {
-          layer_off(_MAC_MODS_RAISED);
-        }
+        layer_off(_MAC_MODS_RAISED);
         update_tri_layer(_RAISE, _FN, _SETTINGS);
       }
       return false;
